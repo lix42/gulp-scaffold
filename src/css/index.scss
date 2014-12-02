@@ -12,3 +12,15 @@ html, body {
     color: navy;
     background: skyblue;
 }
+
+.btn {
+    display: inline-block;
+    min-width: 6rem;
+    line-height: 4rem;
+    margin: 5rem;
+    padding: 0 1rem;
+
+    font-size: 3rem;
+    color: white;
+    background: limegreen;
+}

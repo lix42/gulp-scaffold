@@ -12,7 +12,7 @@ var gulp = require("gulp"),
     lazypipe = require("lazypipe"),
     debug = require("gulp-debug");
 
-var src = "src",
+var src = "src/**/*",
     bld = "bld",
     dist = "dist";
 
@@ -29,17 +29,29 @@ var cssPipe = lazypipe()
     .pipe(gulp.dest, bld);
 
 gulp.task("html", function() {
-    return gulp.src(src + "/**/*.html")
-        .pipe(cssPipe());
+    return gulp.src(src + ".html")
+        .pipe(gulp.dest(bld));
 });
 
 gulp.task("css", function() {
-    return gulp.src(src + "/**/*.css")
+    return gulp.src(src + ".css")
         .pipe(cssPipe());
 });
 
 gulp.task("scss", function() {
-    return gulp.src(src + "/**/*.scss")
+    return gulp.src(src + ".scss")
         .pipe(sass())
         .pipe(cssPipe());
+});
+
+gulp.task("js", function() {
+    return gulp.src(src + ".js")
+        .pipe(jshint())
+        .pipe(jshint.reporter("default"))
+        .pipe(gulp.dest(bld))
+        .pipe(rename({
+            suffix: ".min"
+        }))
+        .pipe(uglify())
+        .pipe(gulp.dest(bld));
 });
