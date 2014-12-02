@@ -10,11 +10,16 @@ var gulp = require('gulp'),
     cache = require('gulp-cache'),
     del = require('del');
 
-var src="src",
-    bld="bld",
-    dist="dist";
+var src = "src",
+    bld = "bld",
+    dist = "dist";
 
-    gulp.task("html", function() {
-        return gulp.src(src+"/**/*.html")
-                .pipe(gulp.dest(bld));
-    });
+gulp.task("html", function() {
+    return gulp.src(src + "/**/*.html")
+        .pipe(gulp.dest(bld));
+});
+
+gulp.task("css", function() {
+    return gulp.src(src + "/**/*.css")
+        .pipe(gulp.dest(bld));
+});

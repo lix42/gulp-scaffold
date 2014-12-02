@@ -1,0 +1,14 @@
+html, body {
+    font-size: 10px;
+}
+
+.main-content {
+    width: 80vw;
+    margin: auto;
+    margin-top: 1rem;
+    border: .5rem solid darkred;
+
+    font-size: 2rem;
+    color: navy;
+    background: skyblue;
+}
