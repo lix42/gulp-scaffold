@@ -28,11 +28,6 @@ var cssPipe = lazypipe()
     .pipe(minifycss)
     .pipe(gulp.dest, bld);
 
-gulp.task("html", function() {
-    return gulp.src(src + ".html")
-        .pipe(gulp.dest(bld));
-});
-
 gulp.task("css", function() {
     return gulp.src(src + ".css")
         .pipe(cssPipe());
@@ -55,3 +50,16 @@ gulp.task("js", function() {
         .pipe(uglify())
         .pipe(gulp.dest(bld));
 });
+
+gulp.task("static", function() {
+    return gulp.src([src + ".html", src + ".jpg", src + ".png", src + ".gif"])
+        .pipe(gulp.dest(bld));
+});
+
+gulp.task("clean", function(cb) {
+    del(bld, cb);
+})
+
+gulp.task("default", ["clean"], function() {
+    gulp.start("static", "js", "css", "scss");
+})
