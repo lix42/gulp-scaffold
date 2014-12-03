@@ -2,7 +2,7 @@
   "name": "gulpFoo",
   "version": "0.0.0",
   "description": "construct gulp skleton step by step.",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,15 +20,11 @@
     "del": "^0.1.3",
     "gulp": "^3.8.9",
     "gulp-autoprefixer": "^1.0.1",
-    "gulp-cache": "^0.2.4",
-    "gulp-concat": "^2.4.1",
     "gulp-debug": "^1.0.1",
     "gulp-jshint": "^1.8.5",
     "gulp-minify-css": "^0.3.11",
-    "gulp-notify": "^2.0.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^1.2.0",
-    "gulp-sourcemaps": "^1.2.4",
     "gulp-uglify": "^1.0.1",
     "gulp-util": "^3.0.1",
     "lazypipe": "^0.2.2"

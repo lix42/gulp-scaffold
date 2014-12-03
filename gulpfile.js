@@ -5,9 +5,6 @@ var gulp = require("gulp"),
     jshint = require("gulp-jshint"),
     uglify = require("gulp-uglify"),
     rename = require("gulp-rename"),
-    concat = require("gulp-concat"),
-    notify = require("gulp-notify"),
-    cache = require("gulp-cache"),
     del = require("del"),
     lazypipe = require("lazypipe"),
     debug = require("gulp-debug"),
@@ -21,7 +18,7 @@ var src = "src/**/*",
 var srccss = src + ".css",
     srcscss = src + ".scss",
     srcjs = src + ".js",
-    srcstatic = [src + ".html", src + ".jpg", src + ".png", src + ".gif"];
+    srcstatic = src + ".+(html|jpg|png|gif)";
 
 var cssPipe = lazypipe()
     // .pipe(debug, {
