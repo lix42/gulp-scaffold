@@ -1,33 +1,22 @@
-html,
-body
-{
+html, body {
     font-size: 10px;
 }
-
-.main-content
-{
+.main-content {
     font-size: 2rem;
-
     width: 80vw;
     margin: auto;
     margin-top: 1rem;
-
     color: navy;
     border: .5rem solid darkred;
     background: skyblue;
 }
-
-.btn
-{
+.btn {
     font-size: 3rem;
     line-height: 4rem;
-
     display: inline-block;
-
     min-width: 6rem;
     margin: 5rem;
     padding: 0 1rem;
-
     color: white;
     background: limegreen;
 }
