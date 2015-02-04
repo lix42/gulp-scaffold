@@ -11,22 +11,34 @@ var gulp = require("gulp"),
     rename = require("gulp-rename"),
     del = require("del"),
     lazypipe = require("lazypipe"),
-    //debug = require("gulp-debug"),
+//debug = require("gulp-debug"),
     browserSync = require("browser-sync"),
     reload = browserSync.reload;
 
 var src = "./src",
     srcFiles = src + "/**/*",
     bld = "./bld",
-    dist = "./dist";
-
-var srcCss = srcFiles + ".css",
+    dist = "./dist",
+    srcCss = srcFiles + ".css",
     srcScss = srcFiles + ".scss",
     srcJs = srcFiles + ".js",
-    srcStatic = srcFiles + ".+(html|jpg|png|gif)",
-    appJs = "src/app/**/*.js";
+    srcStatic = srcFiles + ".+(html|jpg|png|gif|svg)",
+    appJs = "src/app/**/*.js",
+    cssPipe;
 
-var cssPipe = lazypipe()
+gulp.task("browser-sync", function () {
+    browserSync({
+                    server: {
+                        baseDir: [bld, src]
+                    },
+                    files:  [
+                        bld + "/**",
+                        "!" + bld + "/**.map"
+                    ]
+                });
+});
+
+cssPipe = lazypipe()
     // .pipe(debug, {
     //     verbose: true
     // })
@@ -43,18 +55,6 @@ var cssPipe = lazypipe()
     .pipe(reload, {
               stream: true
           });
-
-gulp.task("browser-sync", function () {
-    browserSync({
-                    server: {
-                        baseDir: [bld, src]
-                    },
-                    files:  [
-                        bld + "/**",
-                        "!" + bld + "/**.map"
-                    ]
-                });
-});
 
 gulp.task("css", function () {
     return gulp.src(srcCss)
@@ -73,7 +73,7 @@ gulp.task("js", function () {
         .pipe(jshint.reporter("default"));
 });
 
-gulp.task("appJs", function () {
+gulp.task("appJs", ["js"], function () {
     var browserified = transform(function (filename) {
         var b = browserify(filename);
         return b.bundle();
@@ -105,6 +105,6 @@ gulp.task("default", ["clean"], function () {
 gulp.task("watch", ["browser-sync"], function () {
     gulp.watch(srcCss, ["css"]);
     gulp.watch(srcScss, ["scss"]);
-    gulp.watch(srcJs, ["js", "appJs", reload]);
+    gulp.watch(srcJs, ["js"]);
     gulp.watch(srcStatic, ["static", reload]);
 });
