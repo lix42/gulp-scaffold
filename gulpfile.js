@@ -13,7 +13,8 @@ var gulp = require("gulp"),
     lazypipe = require("lazypipe"),
 //debug = require("gulp-debug"),
     browserSync = require("browser-sync"),
-    reload = browserSync.reload;
+    reload = browserSync.reload,
+    watchify = require("watchify");
 
 var src = "./src",
     srcFiles = src + "/**/*",
@@ -24,6 +25,8 @@ var src = "./src",
     srcJs = srcFiles + ".js",
     srcStatic = srcFiles + ".+(html|jpg|png|gif|svg)",
     appJs = "src/app/**/*.js",
+    watching = false,
+    cache = {},
     cssPipe;
 
 gulp.task("browser-sync", function () {
@@ -44,9 +47,6 @@ cssPipe = lazypipe()
     // })
     .pipe(autoprefixer, "{ browsers: ['last 2 version'] }")
     .pipe(gulp.dest, bld)
-    .pipe(reload, {
-              stream: true
-          })
     .pipe(rename, {
               suffix: ".min"
           })
@@ -74,19 +74,32 @@ gulp.task("js", function () {
 });
 
 gulp.task("appJs", ["js"], function () {
-    var browserified = transform(function (filename) {
-        var b = browserify(filename);
-        return b.bundle();
-    });
+    var bundle = function () {
+        var browserified = transform(function (filename) {
+            if (cache[filename]) {
+                return cache[filename].bundle();
+            }
+            var b = browserify(filename, watchify.args);
+            //b.transform("debowerify");
+            if (watching) {
+                b = watchify(b);
+                b.on("update", bundle);
+                cache[filename] = b;
+            }
+            return b.bundle();
+        });
 
-    return gulp.src(appJs)
-        .pipe(browserified)
-        .pipe(gulp.dest(bld + "/app"))
-        .pipe(rename({
-                         suffix: ".min"
-                     }))
-        .pipe(uglify())
-        .pipe(gulp.dest(bld + "/app"));
+        return gulp.src(appJs)
+            .pipe(browserified)
+            .pipe(gulp.dest(bld + "/app"))
+            .pipe(rename({
+                             suffix: ".min"
+                         }))
+            .pipe(uglify())
+            .pipe(gulp.dest(bld + "/app"));
+    };
+
+    return bundle();
 });
 
 gulp.task("static", function () {
@@ -103,8 +116,10 @@ gulp.task("default", ["clean"], function () {
 });
 
 gulp.task("watch", ["browser-sync"], function () {
+    watching = true;
     gulp.watch(srcCss, ["css"]);
     gulp.watch(srcScss, ["scss"]);
     gulp.watch(srcJs, ["js"]);
     gulp.watch(srcStatic, ["static", reload]);
+    gulp.start("appJs");
 });

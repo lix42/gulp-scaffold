@@ -3,4 +3,4 @@
  */
 var _ = require("lodash");
 
-console.log(_.uniqueId("app2 "));
+console.log(_.uniqueId("app2 9:51PM"));
