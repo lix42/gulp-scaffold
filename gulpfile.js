@@ -1,6 +1,7 @@
 "use strict";
 
-var gulp = require("gulp"),
+var _ = require("lodash"),
+    gulp = require("gulp"),
     sass = require("gulp-sass"),
     autoprefixer = require("gulp-autoprefixer"),
     minifycss = require("gulp-minify-css"),
@@ -9,12 +10,14 @@ var gulp = require("gulp"),
     jshint = require("gulp-jshint"),
     uglify = require("gulp-uglify"),
     rename = require("gulp-rename"),
+    sourcemaps = require("gulp-sourcemaps"),
     del = require("del"),
     lazypipe = require("lazypipe"),
-//debug = require("gulp-debug"),
+    //debug = require("gulp-debug"),
     browserSync = require("browser-sync"),
     reload = browserSync.reload,
-    watchify = require("watchify");
+    watchify = require("watchify"),
+    browwerifyOptions = _.extend({debug: true}, watchify.args);
 
 var src = "./src",
     srcFiles = src + "/**/*",
@@ -31,13 +34,17 @@ var src = "./src",
 
 gulp.task("browser-sync", function () {
     browserSync({
-                    server: {
+                    server:       {
                         baseDir: [bld, src]
                     },
-                    files:  [
+                    files:        [
                         bld + "/**",
                         "!" + bld + "/**.map"
-                    ]
+                    ],
+                    watchOptions: {
+                        debounceDelay: 1000
+                    },
+                    browser:      "google chrome"
                 });
 });
 
@@ -46,6 +53,7 @@ cssPipe = lazypipe()
     //     verbose: true
     // })
     .pipe(autoprefixer, "{ browsers: ['last 2 version'] }")
+    .pipe(sourcemaps.write)
     .pipe(gulp.dest, bld)
     .pipe(rename, {
               suffix: ".min"
@@ -58,11 +66,13 @@ cssPipe = lazypipe()
 
 gulp.task("css", function () {
     return gulp.src(srcCss)
+        .pipe(sourcemaps.init())
         .pipe(cssPipe());
 });
 
 gulp.task("scss", function () {
     return gulp.src(srcScss)
+        .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(cssPipe());
 });
@@ -79,7 +89,7 @@ gulp.task("appJs", ["js"], function () {
             if (cache[filename]) {
                 return cache[filename].bundle();
             }
-            var b = browserify(filename, watchify.args);
+            var b = browserify(filename, browwerifyOptions);
             //b.transform("debowerify");
             if (watching) {
                 b = watchify(b);
