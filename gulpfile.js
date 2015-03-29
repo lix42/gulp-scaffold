@@ -13,11 +13,11 @@ var _ = require("lodash"),
     sourcemaps = require("gulp-sourcemaps"),
     del = require("del"),
     lazypipe = require("lazypipe"),
-    //debug = require("gulp-debug"),
+//debug = require("gulp-debug"),
     browserSync = require("browser-sync"),
     reload = browserSync.reload,
     watchify = require("watchify"),
-    browwerifyOptions = _.extend({debug: true}, watchify.args);
+    browserifyOptions = _.extend({debug: true}, watchify.args);
 
 var src = "./src",
     srcFiles = src + "/**/*",
@@ -37,6 +37,9 @@ gulp.task("browser-sync", function () {
                     server:       {
                         baseDir: [bld, src]
                     },
+                    ui:           {
+                        port: 8000
+                    },
                     files:        [
                         bld + "/**",
                         "!" + bld + "/**.map"
@@ -44,7 +47,7 @@ gulp.task("browser-sync", function () {
                     watchOptions: {
                         debounceDelay: 1000
                     },
-                    browser:      "google chrome"
+                    open:         false
                 });
 });
 
@@ -89,7 +92,7 @@ gulp.task("appJs", ["js"], function () {
             if (cache[filename]) {
                 return cache[filename].bundle();
             }
-            var b = browserify(filename, browwerifyOptions);
+            var b = browserify(filename, browserifyOptions);
             //b.transform("debowerify");
             if (watching) {
                 b = watchify(b);
@@ -121,7 +124,7 @@ gulp.task("clean", function (cb) {
     del(bld, cb);
 });
 
-gulp.task("default", ["clean"], function () {
+gulp.task("build", ["clean"], function () {
     gulp.start("static", "js", "appJs", "css", "scss");
 });
 
@@ -132,4 +135,8 @@ gulp.task("watch", ["browser-sync"], function () {
     gulp.watch(srcJs, ["js"]);
     gulp.watch(srcStatic, ["static", reload]);
     gulp.start("appJs");
+});
+
+gulp.task('default', function () {
+    console.log('Run "gulp watch or gulp build"');
 });
